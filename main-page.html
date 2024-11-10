@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="sidebar">
+            <h2>Playlists</h2>
+            <div class="playlist">
+                <ul id="music-list">
+                    <li>
+                        <p>Neffex - Here To Stay</p>
+                        <audio controls>
+                            <source src="heretostay.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </li>
+                    <li>
+                        <p>Juice Wrld - Rich Forever</p>
+                        <audio controls>
+                            <source src="richforever.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </li>
+                    <li>
+                        <p>YEAT - Wat U Want 2</p>
+                        <audio controls>
+                            <source src="watyouwant.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </li>
+                    <li>
+                        <p>PHEAR-Fast life</p>
+                        <audio controls>
+                            <source src="fastlife.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </li>
+                    <li>
+                        <p>NEFFEX - When I Was Young</p>
+                        <audio controls>
+                            <source src="when.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </li>
+                    <li>
+                        <p>Metro Boomin - Travis Scott</p>
+                        <audio controls>
+                            <source src="Metro Boomin.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </li>
+                    <li>
+                        <p>Future - Solo </p>
+                        <audio controls>
+                            <source src="future.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </li>
+                    <li>
+                        <p>Juice WRLD - Lean Wit Me </p>
+                        <audio controls>
+                            <source src="lean.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </li>
+                </ul>
+            </div>
+            <button id="toggle-sidebar" class="toggle-button">❮</button>
+        </div>
+        <div class="content">
+            <h1>Welcome to Your Music Library</h1>
+            <!-- Adding 5 blank lines -->
+            <br><br><br><br><br>
+            <!-- File Upload Section -->
+            <div class="upload-section">
+                <h2>Upload Your Files</h2>
+                <input type="file" id="file-upload" multiple>
+                <label for="file-upload" class="upload-button">Upload Files</label>
+                <div id="file-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Overlay -->
+    <div id="fullscreen-overlay" class="fullscreen-overlay">
+        <div id="fullscreen-content" class="fullscreen-content"></div>
+        <button id="close-fullscreen" class="close-button">Close</button>
+    </div>
+
+    <script>
+        // Functionality to stop the current track when a new one is played
+        document.querySelectorAll('audio').forEach(audio => {
+            audio.addEventListener('play', () => {
+                document.querySelectorAll('audio').forEach(otherAudio => {
+                    if (otherAudio !== audio) {
+                        otherAudio.pause();
+                        otherAudio.currentTime = 0; // Reset to the beginning
+                    }
+                });
+            });
+        });
+
+        // Function to handle file uploads
+        function handleFileUpload() {
+            document.getElementById('file-upload').addEventListener('change', function () {
+                const fileList = document.getElementById('file-list');
+                const files = Array.from(this.files);
+                const storedFiles = JSON.parse(localStorage.getItem('files')) || [];
+
+                files.forEach(file => {
+                    storedFiles.push({
+                        name: file.name,
+                        type: file.type,
+                        src: URL.createObjectURL(file)
+                    });
+                });
+
+                localStorage.setItem('files', JSON.stringify(storedFiles));
+                displayFiles(storedFiles);
+            });
+        }
+
+        function displayFiles(files) {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';
+
+            files.forEach(file => {
+                const listItem = document.createElement('div');
+                listItem.className = 'file-item';
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'thumbnail';
+
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = file.src;
+                    img.alt = file.name;
+                    thumbnail.appendChild(img);
+                } else if (file.type.startsWith('video/')) {
+                    const video = document.createElement('video');
+                    video.controls = true;
+                    video.src = file.src;
+                    thumbnail.appendChild(video);
+                } else {
+                    const link = document.createElement('a');
+                    link.href = file.src;
+                    link.target = '_blank';
+                    link.textContent = file.name;
+                    listItem.appendChild(link);
+                }
+
+                thumbnail.addEventListener('click', () => {
+                    openFullscreen(file.type, file.src);
+                });
+
+                listItem.appendChild(thumbnail);
+                fileList.appendChild(listItem);
+            });
+        }
+
+        function openFullscreen(type, src) {
+            const overlay = document.getElementById('fullscreen-overlay');
+            const content = document.getElementById('fullscreen-content');
+            content.innerHTML = '';
+
+            if (type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = src;
+                content.appendChild(img);
+            } else if (type.startsWith('video/')) {
+                const video = document.createElement('video');
+                video.controls = true;
+                video.src = src;
+                video.setAttribute('webkit-playsinline', '');
+                video.setAttribute('playsinline', '');
+                content.appendChild(video);
+                video.play();
+            }
+
+            overlay.style.display = 'block';
+        }
+
+        document.getElementById('close-fullscreen').addEventListener('click', () => {
+            const overlay = document.getElementById('fullscreen-overlay');
+            overlay.style.display = 'none';
+        });
+
+        document.getElementById('toggle-sidebar').addEventListener('click', () => {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('collapsed');
+        });
+
+        handleFileUpload();
+        window.addEventListener('load', () => {
+            const storedFiles = JSON.parse(localStorage.getItem('files')) || [];
+            displayFiles(storedFiles);
+        });
+    </script>
+</body>
+</html>

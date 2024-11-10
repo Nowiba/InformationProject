@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Account</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="language-switch-container">
+        <label class="switch">
+            <input type="checkbox" id="language-switch">
+            <span class="slider" id="slider-text">English</span>
+        </label>
+    </div>
+    <div class="container">
+        <div class="logo">
+            <img src="img1.jpg" alt="Information Project Logo" class="circular-img">
+        </div>
+        <h1>Create New Account</h1>
+        <form id="register-form">
+            <input type="text" name="firstName" placeholder="First Name" required>
+            <input type="text" name="lastName" placeholder="Last Name" required>
+            <input type="text" name="birthDate" placeholder="Birth Date" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+            <button type="submit" class="register-button">Register</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            if (data.password !== data.confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            // You can add your code to handle the form submission here
+            // For example, you could use fetch to send the data to your server
+
+            console.log('User data:', data);
+            alert('User registered successfully');
+            window.location.href = 'index.html';
+        });
+
+        // Language switcher functionality
+        const languageSwitch = document.getElementById('language-switch');
+        const sliderText = document.getElementById('slider-text');
+        languageSwitch.addEventListener('change', function () {
+            if (this.checked) {
+                document.documentElement.setAttribute('lang', 'fr');
+                sliderText.textContent = 'Français';
+                document.querySelector('h1').textContent = 'Créer un nouveau compte';
+                document.querySelector('input[name="firstName"]').placeholder = 'Prénom';
+                document.querySelector('input[name="lastName"]').placeholder = 'Nom de famille';
+                document.querySelector('input[name="birthDate"]').placeholder = 'Date de naissance';
+                document.querySelector('input[name="email"]').placeholder = 'Email';
+                document.querySelector('input[name="password"]').placeholder = 'Mot de passe';
+                document.querySelector('input[name="confirmPassword"]').placeholder = 'Confirmer le mot de passe';
+                document.querySelector('.register-button').textContent = 'S\'inscrire';
+            } else {
+                document.documentElement.setAttribute('lang', 'en');
+                sliderText.textContent = 'English';
+                document.querySelector('h1').textContent = 'Create New Account';
+                document.querySelector('input[name="firstName"]').placeholder = 'First Name';
+                document.querySelector('input[name="lastName"]').placeholder = 'Last Name';
+                document.querySelector('input[name="birthDate"]').placeholder = 'Birth Date';
+                document.querySelector('input[name="email"]').placeholder = 'Email';
+                document.querySelector('input[name="password"]').placeholder = 'Password';
+                document.querySelector('input[name="confirmPassword"]').placeholder = 'Confirm Password';
+                document.querySelector('.register-button').textContent = 'Register';
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+                    <!--        -->

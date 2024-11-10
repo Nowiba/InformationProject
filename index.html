@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Project - Log In</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="language-switch-container">
+        <label class="switch">
+            <input type="checkbox" id="language-switch">
+            <span class="slider" id="slider-text">English</span>
+        </label>
+    </div>
+    <div class="container">
+        <div class="logo">
+            <img src="img1.jpg" alt="Information Project Logo" class="circular-img">
+        </div>
+        <h1>Se connecter à Information Project</h1>
+        <form id="login-form">
+            <input type="email" name="email" placeholder="Adresse e-mail ou numéro de tél." required>
+            <div class="password-container">
+                <input type="password" name="password" id="password" placeholder="Mot de passe" required>
+                <button type="button" id="togglePassword">Afficher</button>
+            </div>
+            <div id="error-message" class="error-message"></div>
+            <button type="submit" class="dark-button">Se connecter</button>
+        </form>
+        <div class="additional-buttons">
+            <button class="dark-button" onclick="window.location.href='new-account.html'">Créer nouveau compte</button>
+            <button class="dark-button" onclick="window.location.href='forgot-password.html'">Récupérer mot de passe</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            const validCredentials = [
+                { email: 'informationproject@gmail.com', password: 'it11' },
+                { email: 'mohamedali@gmail.com', password: 'it11' }
+            ];
+
+            const isValidUser = validCredentials.some(user => user.email === data.email && user.password === data.password);
+
+            if (!isValidUser) {
+                document.getElementById('error-message').innerText = 'Invalid credentials. Please try again.';
+                document.querySelector('input[name="email"]').value = '';
+                document.querySelector('input[name="password"]').value = '';
+            } else {
+                document.getElementById('error-message').innerText = 'Login successful! Redirecting...';
+                setTimeout(() => {
+                    window.location.href = 'main-page.html';
+                }, 2000); // Redirect after 2 seconds
+            }
+        });
+
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function (e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.textContent = this.textContent === 'Afficher' ? 'Masquer' : 'Afficher';
+        });
+
+        const languageSwitch = document.getElementById('language-switch');
+        const sliderText = document.getElementById('slider-text');
+        languageSwitch.addEventListener('change', function () {
+            if (this.checked) {
+                document.documentElement.setAttribute('lang', 'fr');
+                sliderText.textContent = 'Français';
+                document.querySelector('h1').textContent = 'Se connecter à Information Project';
+                document.querySelector('input[name="email"]').placeholder = 'Adresse e-mail ou numéro de tél.';
+                document.querySelector('input[name="password"]').placeholder = 'Mot de passe';
+                document.querySelector('.dark-button').textContent = 'Se connecter';
+            } else {
+                document.documentElement.setAttribute('lang', 'en');
+                sliderText.textContent = 'English';
+                document.querySelector('h1').textContent = 'Log In to Information Project';
+                document.querySelector('input[name="email"]').placeholder = 'Email or phone number';
+                document.querySelector('input[name="password"]').placeholder = 'Password';
+                document.querySelector('.dark-button').textContent = 'Log In';
+            }
+        });
+    </script>
+</body>
+</html>
