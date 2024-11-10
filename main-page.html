@@ -1,109 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main page</title>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* Disable default scrollbars */
-        }
-
-        .main-container {
-            display: flex;
-            height: 100vh;
-            overflow-y: auto; /* Allow vertical scrolling */
-        }
-
-        /* Sidebar for playlist */
-        .sidebar {
-            width: 400px; /* Adjust width of the sidebar */
-            background-color: #000; /* Set background color to black */
-            color: white; /* Set text color to white for better contrast */
-            padding: 20px;
-            position: relative;
-            overflow-y: auto; /* Allow vertical scrolling for the playlist */
-            margin-left: 1cm; /* Move the playlist to the right by 1 cm */
-        }
-
-        .playlist {
-            margin-top: 0; /* Align the playlist to the top of the sidebar */
-            max-height: 80vh; /* Prevent overflowing */
-        }
-
-        .playlist ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .playlist li {
-            margin-bottom: 10px;
-        }
-
-        .playlist p {
-            margin: 0;
-            color: white; /* Ensure music names are white */
-        }
-
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-        }
-
-        .upload-section {
-            margin-top: 40px;
-        }
-
-        .upload-button, .download-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-
-        .file-list {
-            margin-top: 20px;
-        }
-
-        .file-item {
-            margin-bottom: 10px;
-        }
-
-        .file-item a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-
-        .file-item a:hover {
-            text-decoration: underline;
-        }
-
-        /* Sidebar toggle button */
-        .toggle-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            left: -50px;
-        }
-
-        .toggle-button:hover {
-            background-color: #45a049;
-        }
-
-    </style>
 </head>
 <body>
     <div class="main-container">
-        <!-- Sidebar with complete playlist -->
         <div class="sidebar">
             <h2>Playlists</h2>
             <div class="playlist">
@@ -168,15 +71,16 @@
             </div>
             <button id="toggle-sidebar" class="toggle-button">❮</button>
         </div>
-
-        <!-- Main content area -->
+        
         <div class="content">
             <h1>Welcome to Your Music Library</h1>
+
             <!-- File Upload Section -->
             <div class="upload-section">
                 <h2>Upload Your Files</h2>
                 <input type="file" id="file-upload" multiple>
                 <label for="file-upload" class="upload-button">Upload Files</label>
+                <button onclick="clearFiles()" class="clear-button">Clear Uploaded Files</button>
                 <div id="file-list" class="file-list"></div>
                 <button id="download-all" class="download-button">Download Uploaded Content</button>
             </div>
@@ -184,13 +88,13 @@
     </div>
 
     <script>
-        // Stop the current track when a new one is played
+        // Stop current track when a new one is played
         document.querySelectorAll('audio').forEach(audio => {
             audio.addEventListener('play', () => {
                 document.querySelectorAll('audio').forEach(otherAudio => {
                     if (otherAudio !== audio) {
                         otherAudio.pause();
-                        otherAudio.currentTime = 0; // Reset to the beginning
+                        otherAudio.currentTime = 0;
                     }
                 });
             });
@@ -199,6 +103,7 @@
         // Handle file uploads and display them
         function handleFileUpload() {
             document.getElementById('file-upload').addEventListener('change', function () {
+                const fileList = document.getElementById('file-list');
                 const files = Array.from(this.files);
                 const storedFiles = JSON.parse(localStorage.getItem('files')) || [];
 
@@ -232,28 +137,19 @@
             });
         }
 
-        // Function for "Download Uploaded Content" button
-        document.getElementById('download-all').addEventListener('click', () => {
-            const files = JSON.parse(localStorage.getItem('files')) || [];
-            if (files.length === 0) {
-                alert("No files uploaded to download.");
-                return;
-            }
+        // Clear uploaded files from local storage
+        function clearFiles() {
+            localStorage.removeItem('files');
+            displayFiles([]); // Update the displayed file list to reflect the change
+        }
 
-            files.forEach(file => {
-                const link = document.createElement('a');
-                link.href = file.src;
-                link.download = file.name;
-                link.style.display = 'none';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
+        // Toggle sidebar functionality
+        document.getElementById('toggle-sidebar').addEventListener('click', () => {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('collapsed');
         });
 
         handleFileUpload();
-
-        // Load stored files on page load
         window.addEventListener('load', () => {
             const storedFiles = JSON.parse(localStorage.getItem('files')) || [];
             displayFiles(storedFiles);
@@ -261,3 +157,6 @@
     </script>
 </body>
 </html>
+
+
+
