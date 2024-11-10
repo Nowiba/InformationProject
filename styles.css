@@ -488,3 +488,21 @@ body, html {
 .download-button:hover {
     background-color: #0056b3;
 }
+
+
+
+
+
+.clear-button {
+    background-color: #f44336; /* Red background for delete/clear action */
+    color: white; /* White text */
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.clear-button:hover {
+    background-color: #e53935; /* Slightly darker red on hover */
+}
