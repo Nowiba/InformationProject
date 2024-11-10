@@ -3,11 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
+    <title>Music Library</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Disable default scrollbars */
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+            overflow-y: auto; /* Allow vertical scrolling */
+        }
+
+        /* Sidebar for playlist */
+        .sidebar {
+            width: 400px; /* Adjust width of the sidebar */
+            background-color: #000; /* Set background color to black */
+            color: white; /* Set text color to white for better contrast */
+            padding: 20px;
+            position: relative;
+            overflow-y: auto; /* Allow vertical scrolling for the playlist */
+            margin-left: 1cm; /* Move the playlist to the right by 1 cm */
+        }
+
+        .playlist {
+            margin-top: 0; /* Align the playlist to the top of the sidebar */
+            max-height: 80vh; /* Prevent overflowing */
+        }
+
+        .playlist ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .playlist li {
+            margin-bottom: 10px;
+        }
+
+        .playlist p {
+            margin: 0;
+            color: white; /* Ensure music names are white */
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .upload-section {
+            margin-top: 40px;
+        }
+
+        .upload-button, .download-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            margin-bottom: 10px;
+        }
+
+        .file-item a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .file-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Sidebar toggle button */
+        .toggle-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            left: -50px;
+        }
+
+        .toggle-button:hover {
+            background-color: #45a049;
+        }
+
+    </style>
 </head>
 <body>
     <div class="main-container">
+        <!-- Sidebar with complete playlist -->
         <div class="sidebar">
             <h2>Playlists</h2>
             <div class="playlist">
@@ -34,7 +130,7 @@
                         </audio>
                     </li>
                     <li>
-                        <p>PHEAR-Fast life</p>
+                        <p>PHEAR - Fast Life</p>
                         <audio controls>
                             <source src="fastlife.mp3" type="audio/mpeg">
                             Your browser does not support the audio element.
@@ -55,14 +151,14 @@
                         </audio>
                     </li>
                     <li>
-                        <p>Future - Solo </p>
+                        <p>Future - Solo</p>
                         <audio controls>
                             <source src="future.mp3" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
                     </li>
                     <li>
-                        <p>Juice WRLD - Lean Wit Me </p>
+                        <p>Juice WRLD - Lean Wit Me</p>
                         <audio controls>
                             <source src="lean.mp3" type="audio/mpeg">
                             Your browser does not support the audio element.
@@ -72,28 +168,23 @@
             </div>
             <button id="toggle-sidebar" class="toggle-button">❮</button>
         </div>
+
+        <!-- Main content area -->
         <div class="content">
             <h1>Welcome to Your Music Library</h1>
-            <!-- Adding 5 blank lines -->
-            <br><br><br><br><br>
             <!-- File Upload Section -->
             <div class="upload-section">
                 <h2>Upload Your Files</h2>
                 <input type="file" id="file-upload" multiple>
                 <label for="file-upload" class="upload-button">Upload Files</label>
-                <div id="file-list"></div>
+                <div id="file-list" class="file-list"></div>
+                <button id="download-all" class="download-button">Download Uploaded Content</button>
             </div>
         </div>
     </div>
 
-    <!-- Fullscreen Overlay -->
-    <div id="fullscreen-overlay" class="fullscreen-overlay">
-        <div id="fullscreen-content" class="fullscreen-content"></div>
-        <button id="close-fullscreen" class="close-button">Close</button>
-    </div>
-
     <script>
-        // Functionality to stop the current track when a new one is played
+        // Stop the current track when a new one is played
         document.querySelectorAll('audio').forEach(audio => {
             audio.addEventListener('play', () => {
                 document.querySelectorAll('audio').forEach(otherAudio => {
@@ -105,10 +196,9 @@
             });
         });
 
-        // Function to handle file uploads
+        // Handle file uploads and display them
         function handleFileUpload() {
             document.getElementById('file-upload').addEventListener('change', function () {
-                const fileList = document.getElementById('file-list');
                 const files = Array.from(this.files);
                 const storedFiles = JSON.parse(localStorage.getItem('files')) || [];
 
@@ -125,6 +215,7 @@
             });
         }
 
+        // Display uploaded files and make them downloadable
         function displayFiles(files) {
             const fileList = document.getElementById('file-list');
             fileList.innerHTML = '';
@@ -132,69 +223,37 @@
             files.forEach(file => {
                 const listItem = document.createElement('div');
                 listItem.className = 'file-item';
-                const thumbnail = document.createElement('div');
-                thumbnail.className = 'thumbnail';
-
-                if (file.type.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    img.src = file.src;
-                    img.alt = file.name;
-                    thumbnail.appendChild(img);
-                } else if (file.type.startsWith('video/')) {
-                    const video = document.createElement('video');
-                    video.controls = true;
-                    video.src = file.src;
-                    thumbnail.appendChild(video);
-                } else {
-                    const link = document.createElement('a');
-                    link.href = file.src;
-                    link.target = '_blank';
-                    link.textContent = file.name;
-                    listItem.appendChild(link);
-                }
-
-                thumbnail.addEventListener('click', () => {
-                    openFullscreen(file.type, file.src);
-                });
-
-                listItem.appendChild(thumbnail);
+                const link = document.createElement('a');
+                link.href = file.src;
+                link.download = file.name;
+                link.textContent = file.name;
+                listItem.appendChild(link);
                 fileList.appendChild(listItem);
             });
         }
 
-        function openFullscreen(type, src) {
-            const overlay = document.getElementById('fullscreen-overlay');
-            const content = document.getElementById('fullscreen-content');
-            content.innerHTML = '';
-
-            if (type.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = src;
-                content.appendChild(img);
-            } else if (type.startsWith('video/')) {
-                const video = document.createElement('video');
-                video.controls = true;
-                video.src = src;
-                video.setAttribute('webkit-playsinline', '');
-                video.setAttribute('playsinline', '');
-                content.appendChild(video);
-                video.play();
+        // Function for "Download Uploaded Content" button
+        document.getElementById('download-all').addEventListener('click', () => {
+            const files = JSON.parse(localStorage.getItem('files')) || [];
+            if (files.length === 0) {
+                alert("No files uploaded to download.");
+                return;
             }
 
-            overlay.style.display = 'block';
-        }
-
-        document.getElementById('close-fullscreen').addEventListener('click', () => {
-            const overlay = document.getElementById('fullscreen-overlay');
-            overlay.style.display = 'none';
-        });
-
-        document.getElementById('toggle-sidebar').addEventListener('click', () => {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('collapsed');
+            files.forEach(file => {
+                const link = document.createElement('a');
+                link.href = file.src;
+                link.download = file.name;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
         });
 
         handleFileUpload();
+
+        // Load stored files on page load
         window.addEventListener('load', () => {
             const storedFiles = JSON.parse(localStorage.getItem('files')) || [];
             displayFiles(storedFiles);
