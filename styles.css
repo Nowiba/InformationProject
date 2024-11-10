@@ -348,81 +348,143 @@ a {
         }
         
         /* Main Page Upoload Files Css */ 
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #fff; /* Normal background color for the center and right page */
-            color: black; /* Normal text color */
-        }
-        
-        .main-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .sidebar {
-            width: 35%; /* Extend the green sidebar to cover the playlist area */
-            background-color: #1db954; /* Spotify green */
-            padding: 20px;
-            box-sizing: border-box;
-            position: relative;
-            transition: width 0.3s;
-        }
-        
-        .sidebar.collapsed {
-            width: 10%; /* Collapsed width for the sidebar */
-        }
-        
-        .sidebar h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #fff;
-        }
-        
-        .playlist {
-            height: calc(100vh - 80px); /* Adjust height to fit within the viewport */
-        }
-        
-        .playlist ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .playlist li {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            background-color: #282828; /* Dark background for list items */
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            transition: background-color 0.3s;
-        }
-        
-        .playlist li:hover {
-            background-color: #1ed760;
-            color: white;
-        }
-        
-        .playlist p {
-            margin: 0 0 10px;
-            color: white; /* Make the title text white */
-            font-style: italic; /* Make the title text italic */
-        }
-        
-        .audio-player {
-            width: 100%;
-            margin-top: 10px;
-        }
-        
-        .content {
-            width: 65%; /* Adjust width to complement the extended sidebar */
-            padding: 20px;
-            box-sizing: border-box;
-            background-color: #f0f0f0;}
+
+/* General Styles */
+body, html {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    overflow: hidden; /* Prevents page-wide scroll */
+}
+
+/* Main container */
+.main-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 350px; /* Increased width for more space */
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    overflow-y: auto; /* Enables vertical scroll only */
+    overflow-x: hidden; /* Disables horizontal scroll */
+    transition: width 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.collapsed {
+    width: 50px;
+}
+
+.sidebar h2 {
+    font-size: 1.5em;
+    margin-top: 0;
+    text-align: center;
+}
+
+.playlist ul {
+    list-style: none;
+    padding: 0;
+    text-align: left; /* Aligns text to the left for better readability */
+    padding-left: 10px;
+}
+
+.playlist li {
+    margin: 15px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Content styles */
+.content {
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.content h1 {
+    font-size: 2em;
+    color: #333;
+}
+
+/* Upload section */
+.upload-section {
+    margin-top: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 80%;
+    max-width: 500px;
+}
+
+.upload-section h2 {
+    font-size: 1.5em;
+    color: #333;
+}
+
+.upload-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.upload-button:hover {
+    background-color: #555;
+}
+
+/* File list */
+.file-list {
+    margin-top: 15px;
+    text-align: left;
+}
+
+.file-item {
+    margin: 5px 0;
+    padding: 8px;
+    background: #f0f0f5;
+    border-radius: 5px;
+}
+
+.file-item a {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.file-item a:hover {
+    text-decoration: underline;
+}
+
+/* Download button */
+.download-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 15px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.download-button:hover {
+    background-color: #0056b3;
+}
